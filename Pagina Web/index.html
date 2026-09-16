@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online Duoc</title>
+    <!-- Se incluye la hoja de estilos externa -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor-logo">
+            <h1 class="logo">MiTienda</h1>
+        </div>
+        <nav class="navegacion-principal">
+            <ul class="lista-enlaces">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#">Productos</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Blogs</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="contenedor-usuario">
+                <a href="#">Iniciar Sesión</a>
+                <a href="#">Registrar</a>
+                <div class="carrito-icono">
+                    🛒 <span id="contador-carrito">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="contenido-principal">
+        <!-- Componente principal (Hero) -->
+        <section class="seccion-hero">
+            <div class="texto-hero">
+                <h2>TIENDA ONLINE</h2>
+                <p>Encuentra los mejores productos tecnológicos al mejor precio en todo Chile.</p>
+                <button class="boton-primario">Ver productos</button>
+            </div>
+            <div class="imagen-hero">
+                <!-- Imagen de libre uso de Unsplash -->
+                <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&q=80" alt="Interior de una tienda tecnológica" style="border-radius: 8px;">
+            </div>
+        </section>
+
+        <!-- Listado de Productos (Se cargan vía JS) -->
+        <section class="seccion-productos">
+            <h3 class="titulo-seccion">Nuestros Productos</h3>
+            <div id="contenedor-productos" class="cuadricula-productos">
+                <!-- Los productos se inyectarán aquí mediante JavaScript -->
+            </div>
+        </section>
+
+        <!-- Formulario de Contacto para validaciones JS -->
+        <section id="contacto" class="seccion-contacto">
+            <h3 class="titulo-seccion">Contáctanos</h3>
+            <form id="formulario-contacto" class="formulario" novalidate>
+                <div class="grupo-control">
+                    <label for="nombre">Nombre Completo:</label>
+                    <input type="text" id="nombre" class="entrada-datos" autocomplete="name">
+                    <span class="mensaje-error" id="error-nombre"></span>
+                </div>
+                
+                <div class="grupo-control">
+                    <label for="correo">Correo Electrónico:</label>
+                    <input type="email" id="correo" class="entrada-datos" autocomplete="email">
+                    <span class="mensaje-error" id="error-correo"></span>
+                </div>
+
+                <div class="grupo-control">
+                    <label for="comentario">Comentario:</label>
+                    <textarea id="comentario" class="entrada-datos text-area"></textarea>
+                    <span class="mensaje-error" id="error-comentario"></span>
+                </div>
+
+                <button type="submit" class="boton-primario">Enviar Mensaje</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="pie-pagina">
+        <p>&copy; 2026 MiTienda - Evaluación Parcial 1 DSY1104.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
