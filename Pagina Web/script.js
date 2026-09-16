@@ -1,4 +1,3 @@
-// 1. CREACIÓN DEL ARREGLO DE PRODUCTOS Y RENDERIZADO (Imágenes de libre uso)
 const productos = [
     { 
         id: 1, 
@@ -26,18 +25,15 @@ const productos = [
     }
 ];
 
-// Formateador para pesos chilenos (CLP)
 const formatearCLP = (valor) => {
     return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(valor);
 };
 
-// Función para mostrar los productos dinámicamente en el HTML
 function renderizarProductos() {
     const contenedor = document.getElementById("contenedor-productos");
     let htmlProductos = "";
 
     productos.forEach(producto => {
-        // Se agregó un estilo object-fit para que las imágenes mantengan buena proporción
         htmlProductos += `
             <article class="tarjeta-producto">
                 <img src="${producto.imagen}" alt="${producto.nombre}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px;">
@@ -51,7 +47,6 @@ function renderizarProductos() {
     contenedor.innerHTML = htmlProductos;
 }
 
-// 2. LÓGICA DEL CARRITO CON LOCALSTORAGE
 let carrito = JSON.parse(localStorage.getItem('carritoCompras')) || [];
 
 function actualizarContadorCarrito() {
@@ -75,7 +70,6 @@ function agregarAlCarrito(idProducto) {
     alert("Producto añadido al carrito exitosamente.");
 }
 
-// 3. VALIDACIÓN DE FORMULARIOS CON JAVASCRIPT
 const formularioContacto = document.getElementById("formulario-contacto");
 
 formularioContacto.addEventListener("submit", function(evento) {
@@ -95,7 +89,6 @@ formularioContacto.addEventListener("submit", function(evento) {
     errorCorreo.style.display = "none";
     errorComentario.style.display = "none";
 
-    // Validación Nombre
     if (inputNombre.value.trim() === "") {
         errorNombre.textContent = "El nombre es obligatorio.";
         errorNombre.style.display = "block";
@@ -106,7 +99,6 @@ formularioContacto.addEventListener("submit", function(evento) {
         formularioValido = false;
     }
 
-    // Validación Correo
     const correoValor = inputCorreo.value.trim();
     const dominiosPermitidos = ["@duoc.cl", "@profesor.duoc.cl", "@gmail.com"];
     const dominioValido = dominiosPermitidos.some(dominio => correoValor.endsWith(dominio));
@@ -125,7 +117,6 @@ formularioContacto.addEventListener("submit", function(evento) {
         formularioValido = false;
     }
 
-    // Validación Comentario
     if (inputComentario.value.trim() === "") {
         errorComentario.textContent = "El comentario es obligatorio.";
         errorComentario.style.display = "block";
