@@ -9,7 +9,7 @@ const productos = [
         id: 2, 
         nombre: "Mouse Gamer Inalámbrico", 
         precio: 25000, 
-        imagen: "https://images.unsplash.com/photo-1527814050087-379381547942?w=400&q=80" 
+        imagen: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&auto=format&fit=crop&q=80"
     },
     { 
         id: 3, 
@@ -46,7 +46,6 @@ function renderizarProductos() {
 
     contenedor.innerHTML = htmlProductos;
 }
-
 let carrito = JSON.parse(localStorage.getItem('carritoCompras')) || [];
 
 function actualizarContadorCarrito() {
@@ -133,8 +132,201 @@ formularioContacto.addEventListener("submit", function(evento) {
     }
 });
 
-// Inicializar funciones al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
     renderizarProductos();
     actualizarContadorCarrito();
+});
+
+// -------------------------------------------------------------
+// 4. DATOS DE REGIONES Y COMUNAS (ARREGLO JS)
+// -------------------------------------------------------------
+const regionesYComunas = [
+    {
+        region: "Región Metropolitana de Santiago",
+        comunas: ["Santiago", "Providencia", "Las Condes", "Maipú", "Puente Alto"]
+    },
+    {
+        region: "Región de Valparaíso",
+        comunas: ["Valparaíso", "Viña del Mar", "Quilpué", "Concón"]
+    },
+    {
+        region: "Región del Biobío",
+        comunas: ["Concepción", "Talcahuano", "Los Ángeles", "Chiguayante"]
+    },
+    {
+        region: "Región de la Araucanía",
+        comunas: ["Temuco", "Padre Las Casas", "Villarrica", "Pucón"]
+    },
+    {
+        region: "Región de Ñuble",
+        comunas: ["Chillán", "Linares", "Longaví"]
+    }
+];
+
+// Cargar opciones de regiones al cargar la página
+function cargarRegiones() {
+    const selectRegion = document.getElementById("region");
+    if (!selectRegion) return;
+
+    regionesYComunas.forEach(item => {
+        const opcion = document.createElement("option");
+        opcion.value = item.region;
+        opcion.textContent = item.region;
+        selectRegion.appendChild(opcion);
+    });
+
+    selectRegion.addEventListener("change", function() {
+        const selectComuna = document.getElementById("comuna");
+        selectComuna.innerHTML = '<option value="">-- Seleccione la comuna --</option>';
+        
+        const regionSeleccionada = regionesYComunas.find(r => r.region === this.value);
+
+        if (regionSeleccionada) {
+            selectComuna.disabled = false;
+            regionSeleccionada.comunas.forEach(comuna => {
+                const opcion = document.createElement("option");
+                opcion.value = comuna;
+                opcion.textContent = comuna;
+                selectComuna.appendChild(opcion);
+            });
+        } else {
+            selectComuna.disabled = true;
+        }
+    });
+}
+
+// -------------------------------------------------------------
+// 5. VALIDACIÓN FORMULARIO DE REGISTRO
+// -------------------------------------------------------------
+const formularioRegistro = document.getElementById("formulario-registro");
+
+if (formularioRegistro) {
+    formularioRegistro.addEventListener("submit", function(e) {
+        e.preventDefault();
+        let esValido = true;
+
+        const run = document.getElementById("run");
+        const nombre = document.getElementById("nombre-registro");
+        const apellidos = document.getElementById("apellidos");
+        const correo = document.getElementById("correo-registro");
+        const clave = document.getElementById("clave-registro");
+        const claveConf = document.getElementById("clave-confirmar");
+        const region = document.getElementById("region");
+        const comuna = document.getElementById("comuna");
+        const direccion = document.getElementById("direccion");
+
+        // Limpiar errores
+        document.querySelectorAll(".seccion-contacto .mensaje-error").forEach(span => span.style.display = "none");
+
+        // Validar RUN (7 a 9 caracteres, sin puntos ni guion)
+        const regexRun = /^[0-9]{7,8}[0-9kK]{1}$/;
+        if (!regexRun.test(run.value.trim())) {
+            mostrarError("error-run", "RUN inválido. Debe ingresar entre 7 y 9 caracteres sin puntos ni guion (ej: 19011022K).");
+            esValido = false;
+        }
+
+        // Validar Nombre (Max 50)
+        if (nombre.value.trim() === "" || nombre.value.length > 50) {
+            mostrarError("error-nombre-registro", "El nombre es obligatorio y debe tener máximo 50 caracteres.");
+            esValido = false;
+        }
+
+        // Validar Apellidos (Max 100)
+        if (apellidos.value.trim() === "" || apellidos.value.length > 100) {
+            mostrarError("error-apellidos", "Los apellidos son obligatorios y deben tener máximo 100 caracteres.");
+            esValido = false;
+        }
+
+        // Validar Correo (Dominios permitidos)
+        const dominios = ["@duoc.cl", "@profesor.duoc.cl", "@gmail.com"];
+        const correoValido = dominios.some(d => correo.value.trim().endsWith(d));
+        if (correo.value.trim() === "" || correo.value.length > 100 || !correoValido) {
+            mostrarError("error-correo-registro", "Correo obligatorio (máx 100). Dominios: @duoc.cl, @profesor.duoc.cl, @gmail.com.");
+            esValido = false;
+        }
+
+        // Validar Contraseña (4 a 10 caracteres)
+        if (clave.value.length < 4 || clave.value.length > 10) {
+            mostrarError("error-clave-registro", "La contraseña debe tener entre 4 y 10 caracteres.");
+            esValido = false;
+        }
+
+        // Validar Confirmar Contraseña
+        if (claveConf.value !== clave.value || claveConf.value === "") {
+            mostrarError("error-clave-confirmar", "Las contraseñas no coinciden.");
+            esValido = false;
+        }
+
+        // Validar Selección Región y Comuna
+        if (region.value === "") {
+            mostrarError("error-region", "Debe seleccionar una región.");
+            esValido = false;
+        }
+        if (comuna.value === "") {
+            mostrarError("error-comuna", "Debe seleccionar una comuna.");
+            esValido = false;
+        }
+
+        // Validar Dirección (Max 300)
+        if (direccion.value.trim() === "" || direccion.value.length > 300) {
+            mostrarError("error-direccion", "La dirección es obligatoria y debe tener máximo 300 caracteres.");
+            esValido = false;
+        }
+
+        if (esValido) {
+            alert("¡Usuario registrado con éxito!");
+            formularioRegistro.reset();
+            document.getElementById("comuna").disabled = true;
+        }
+    });
+}
+
+// -------------------------------------------------------------
+// 6. VALIDACIÓN FORMULARIO INICIO DE SESIÓN
+// -------------------------------------------------------------
+const formularioLogin = document.getElementById("formulario-login");
+
+if (formularioLogin) {
+    formularioLogin.addEventListener("submit", function(e) {
+        e.preventDefault();
+        let esValido = true;
+
+        const correo = document.getElementById("correo-login");
+        const clave = document.getElementById("clave-login");
+
+        document.querySelectorAll("#formulario-login .mensaje-error").forEach(span => span.style.display = "none");
+
+        const dominios = ["@duoc.cl", "@profesor.duoc.cl", "@gmail.com"];
+        const correoValido = dominios.some(d => correo.value.trim().endsWith(d));
+
+        if (correo.value.trim() === "" || correo.value.length > 100 || !correoValido) {
+            mostrarError("error-correo-login", "Correo no válido. Debe pertenecer a @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+            esValido = false;
+        }
+
+        if (clave.value.length < 4 || clave.value.length > 10) {
+            mostrarError("error-clave-login", "La contraseña debe contener entre 4 y 10 caracteres.");
+            esValido = false;
+        }
+
+        if (esValido) {
+            alert("Inicio de sesión exitoso.");
+            formularioLogin.reset();
+            window.location.href = "index.html";
+        }
+    });
+}
+
+// Función auxiliar para mostrar mensajes de error dinámicos
+function mostrarError(elementId, mensaje) {
+    const errorSpan = document.getElementById(elementId);
+    if (errorSpan) {
+        errorSpan.textContent = mensaje;
+        errorSpan.style.display = "block";
+    }
+}
+
+// Inicialización de selector de regiones
+document.addEventListener("DOMContentLoaded", () => {
+    cargarRegiones();
 });

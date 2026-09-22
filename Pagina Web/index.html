@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda Online Duoc</title>
+    <!-- Se incluye la hoja de estilos externa -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -30,6 +31,7 @@
     </header>
 
     <main class="contenido-principal">
+        <!-- Componente principal (Hero) -->
         <section class="seccion-hero">
             <div class="texto-hero">
                 <h2>TIENDA ONLINE</h2>
@@ -37,14 +39,20 @@
                 <button class="boton-primario">Ver productos</button>
             </div>
             <div class="imagen-hero">
+                <!-- Imagen de libre uso de Unsplash -->
                 <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&q=80" alt="Interior de una tienda tecnológica" style="border-radius: 8px;">
             </div>
         </section>
+
+        <!-- Listado de Productos (Se cargan vía JS) -->
         <section class="seccion-productos">
             <h3 class="titulo-seccion">Nuestros Productos</h3>
             <div id="contenedor-productos" class="cuadricula-productos">
+                <!-- Los productos se inyectarán aquí mediante JavaScript -->
             </div>
         </section>
+
+        <!-- Formulario de Contacto para validaciones JS -->
         <section id="contacto" class="seccion-contacto">
             <h3 class="titulo-seccion">Contáctanos</h3>
             <form id="formulario-contacto" class="formulario" novalidate>
@@ -72,7 +80,7 @@
     </main>
 
     <footer class="pie-pagina">
-        <p>&copy; 2026 MiTienda - Evaluación Parcial 1 DSY1104.</p>
+        <p>2026 MiTienda</p>
     </footer>
 
     <script src="script.js"></script>
