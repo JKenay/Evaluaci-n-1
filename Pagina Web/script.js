@@ -330,3 +330,148 @@ function mostrarError(elementId, mensaje) {
 document.addEventListener("DOMContentLoaded", () => {
     cargarRegiones();
 });
+
+// -------------------------------------------------------------
+// 7. LÓGICA DE ADMINISTRACIÓN (MANTENEDOR DE PRODUCTOS Y USUARIOS)
+// -------------------------------------------------------------
+
+// Arreglo inicial de usuarios registrados para simulación
+let usuariosRegistrados = JSON.parse(localStorage.getItem('usuariosApp')) || [
+    { run: "19011022K", nombre: "Juan Pérez", correo: "juan.perez@duoc.cl", rol: "Administrador" },
+    { run: "182234445", nombre: "María González", correo: "m.gonzalez@gmail.com", rol: "Cliente" }
+];
+
+// Cargar tablas al iniciar vista de administración
+function renderizarTablaProductosAdmin() {
+    const cuerpoTabla = document.getElementById("cuerpo-tabla-productos");
+    if (!cuerpoTabla) return;
+
+    cuerpoTabla.innerHTML = "";
+
+    productos.forEach((p, index) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>PROD-00${p.id}</td>
+            <td>${p.nombre}</td>
+            <td>Periféricos</td>
+            <td>${formatearCLP(p.precio)}</td>
+            <td>15</td>
+            <td>5</td>
+            <td>
+                <button class="boton-eliminar" onclick="eliminarProducto(${index})">Eliminar</button>
+            </td>
+        `;
+        cuerpoTabla.appendChild(fila);
+    });
+}
+
+function renderizarTablaUsuariosAdmin() {
+    const cuerpoTabla = document.getElementById("cuerpo-tabla-usuarios");
+    if (!cuerpoTabla) return;
+
+    cuerpoTabla.innerHTML = "";
+
+    usuariosRegistrados.forEach((u, index) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${u.run}</td>
+            <td>${u.nombre}</td>
+            <td>${u.correo}</td>
+            <td>${u.rol}</td>
+            <td>
+                <button class="boton-eliminar" onclick="eliminarUsuario(${index})">Eliminar</button>
+            </td>
+        `;
+        cuerpoTabla.appendChild(fila);
+    });
+}
+
+function eliminarProducto(index) {
+    if (confirm("¿Está seguro de que desea eliminar este producto?")) {
+        productos.splice(index, 1);
+        renderizarTablaProductosAdmin();
+    }
+}
+
+function eliminarUsuario(index) {
+    if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+        usuariosRegistrados.splice(index, 1);
+        localStorage.setItem('usuariosApp', JSON.stringify(usuariosRegistrados));
+        renderizarTablaUsuariosAdmin();
+    }
+}
+
+// Formulario de ingreso de productos
+const formularioProducto = document.getElementById("formulario-producto");
+
+if (formularioProducto) {
+    formularioProducto.addEventListener("submit", function(e) {
+        e.preventDefault();
+        let esValido = true;
+
+        const codigo = document.getElementById("prod-codigo");
+        const nombre = document.getElementById("prod-nombre");
+        const categoria = document.getElementById("prod-categoria");
+        const precio = document.getElementById("prod-precio");
+        const stock = document.getElementById("prod-stock");
+        const stockCritico = document.getElementById("prod-stock-critico");
+        const imagen = document.getElementById("prod-imagen");
+
+        document.querySelectorAll("#formulario-producto .mensaje-error").forEach(s => s.style.display = "none");
+
+        if (codigo.value.trim() === "") {
+            mostrarError("error-prod-codigo", "El código es obligatorio.");
+            esValido = false;
+        }
+
+        if (nombre.value.trim() === "") {
+            mostrarError("error-prod-nombre", "El nombre del producto es obligatorio.");
+            esValido = false;
+        }
+
+        if (categoria.value === "") {
+            mostrarError("error-prod-categoria", "Debe seleccionar una categoría.");
+            esValido = false;
+        }
+
+        if (precio.value <= 0) {
+            mostrarError("error-prod-precio", "El precio debe ser un número mayor a cero.");
+            esValido = false;
+        }
+
+        if (stock.value === "" || stock.value < 0) {
+            mostrarError("error-prod-stock", "Ingrese un valor de stock válido.");
+            esValido = false;
+        }
+
+        if (stockCritico.value === "" || stockCritico.value < 1) {
+            mostrarError("error-prod-stock-critico", "El stock crítico debe ser de al menos 1.");
+            esValido = false;
+        }
+
+        if (imagen.value.trim() === "") {
+            mostrarError("error-prod-imagen", "La URL de la imagen es obligatoria.");
+            esValido = false;
+        }
+
+        if (esValido) {
+            const nuevoProducto = {
+                id: productos.length + 1,
+                nombre: nombre.value.trim(),
+                precio: parseInt(precio.value),
+                imagen: imagen.value.trim()
+            };
+
+            productos.push(nuevoProducto);
+            renderizarTablaProductosAdmin();
+            formularioProducto.reset();
+            alert("Producto guardado exitosamente.");
+        }
+    });
+}
+
+// Ejecutar cargas dinámicas en DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+    renderizarTablaProductosAdmin();
+    renderizarTablaUsuariosAdmin();
+});
