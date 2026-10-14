@@ -3,84 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Online Duoc</title>
-    <!-- Se incluye la hoja de estilos externa -->
+    <title>satis-factory // High Tech & Gaming Gear</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- Encabezado Glassmorphism -->
     <header class="encabezado">
-        <div class="contenedor-logo">
-            <h1 class="logo">MiTienda</h1>
+        <div class="contenedor-logo" onclick="cambiarVista('vista-home')">
+            <h1 class="logo">satis<span class="logo-accent">-factory</span></h1>
         </div>
+        
         <nav class="navegacion-principal">
             <ul class="lista-enlaces">
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="#">Productos</a></li>
-                <li><a href="#">Nosotros</a></li>
-                <li><a href="#">Blogs</a></li>
-                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#" onclick="cambiarVista('vista-home')">Inicio</a></li>
+                <li><a href="#" onclick="irAProductos()">Productos</a></li>
+                <li><a href="#" onclick="cambiarVista('vista-nosotros')">Nosotros</a></li>
+                <li><a href="#" onclick="cambiarVista('vista-blog')">Blog</a></li>
+                <!-- Pestaña Admin protegida: se oculta por defecto mediante JS/CSS -->
+                <li id="nav-item-admin" style="display: none;"><a href="#" onclick="cambiarVista('vista-admin')" class="enlace-admin">Admin</a></li>
             </ul>
             <div class="contenedor-usuario">
-                <a href="#">Iniciar Sesión</a>
-                <a href="#">Registrar</a>
-                <div class="carrito-icono">
-                    🛒 <span id="contador-carrito">0</span>
+                <div id="bloque-invitado">
+                    <button class="btn-link" onclick="cambiarVista('vista-login')">Ingresar</button>
+                    <button class="btn-destacado" onclick="cambiarVista('vista-registro')">Crear Cuenta</button>
+                </div>
+                <div id="bloque-sesion" style="display: none; align-items: center; gap: 10px;">
+                    <span id="label-usuario-actual" class="badge-user">Usuario</span>
+                    <button class="btn-secundario-sm" onclick="cerrarSesion()">Salir</button>
+                </div>
+                <div class="carrito-icono" onclick="cambiarVista('vista-carrito')" title="Ver Carrito">
+                    <span class="icono-bag">🛒</span>
+                    <span id="contador-carrito" class="badge-carrito">0</span>
                 </div>
             </div>
         </nav>
     </header>
 
     <main class="contenido-principal">
-        <!-- Componente principal (Hero) -->
-        <section class="seccion-hero">
-            <div class="texto-hero">
-                <h2>TIENDA ONLINE</h2>
-                <p>Encuentra los mejores productos tecnológicos al mejor precio en todo Chile.</p>
-                <button class="boton-primario">Ver productos</button>
+
+        <!-- VISTA 1: HOME & CATALOGO -->
+        <section id="vista-home" class="vista activa">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <span class="tag-badge">NEXT-GEN HARDWARE</span>
+                    <h2>MAXIMIZA TU RENDIMIENTO AL <span class="texto-gradiente">Siguiente Nivel</span></h2>
+                    <p>Equipamiento de ingeniería avanzada para gamers, creadores de contenido y desarrolladores exigentes.</p>
+                    <button class="boton-primario" onclick="irAProductos()">Explorar Catálogo ↓</button>
+                </div>
+                <div class="hero-media">
+                    <div class="hero-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80" alt="Hardware satis-factory">
+                    </div>
+                </div>
             </div>
-            <div class="imagen-hero">
-                <!-- Imagen de libre uso de Unsplash -->
-                <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&q=80" alt="Interior de una tienda tecnológica" style="border-radius: 8px;">
+
+            <section id="seccion-catalogo-scroll" class="seccion-catalogo">
+                <div class="encabezado-seccion">
+                    <h3 class="titulo-seccion">Catálogo <span class="texto-gradiente">Destacado</span></h3>
+                    <p class="subtitulo-seccion">Haz clic en cualquier producto para inspeccionar sus especificaciones técnicas.</p>
+                </div>
+                <div id="contenedor-productos" class="cuadricula-productos">
+                    <!-- Renderizado dinámico -->
+                </div>
+            </section>
+
+            <!-- Sección de Contacto -->
+            <section class="seccion-contacto">
+                <div class="tarjeta-glass-form">
+                    <h3 class="titulo-seccion text-center">¿Tienes alguna duda? <span class="texto-gradiente">Contáctanos</span></h3>
+                    <form id="formulario-contacto" class="formulario" novalidate>
+                        <div class="grupo-control">
+                            <label for="contacto-nombre">Nombre Completo</label>
+                            <input type="text" id="contacto-nombre" class="entrada-datos" placeholder="Ej: Constanza Silva">
+                            <span class="sugerencia-span" id="sug-contacto-nombre">Sugerencia: Ingrese su nombre y apellido.</span>
+                        </div>
+                        <div class="grupo-control">
+                            <label for="contacto-correo">Correo Electrónico</label>
+                            <input type="email" id="contacto-correo" class="entrada-datos" placeholder="nombre@ejemplo.com">
+                            <span class="sugerencia-span" id="sug-contacto-correo">Sugerencia: Ejemplo usuario@gmail.com o @duoc.cl</span>
+                        </div>
+                        <div class="grupo-control">
+                            <label for="contacto-mensaje">Mensaje</label>
+                            <textarea id="contacto-mensaje" class="entrada-datos" rows="4" placeholder="Escribe tu consulta aquí..."></textarea>
+                            <span class="sugerencia-span" id="sug-contacto-mensaje">Sugerencia: Mínimo 10 caracteres.</span>
+                        </div>
+                        <button type="submit" class="boton-primario ancho-completo">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </section>
+        </section>
+
+        <!-- VISTA 2: NOSOTROS -->
+        <section id="vista-nosotros" class="vista">
+            <div class="hero-banner mini-hero">
+                <div class="hero-content">
+                    <span class="tag-badge">NUESTRA ESENCIA</span>
+                    <h2>Sobre <span class="texto-gradiente">satis-factory</span></h2>
+                    <p>Reinventando el acceso a tecnología de alto rendimiento en todo Chile desde 2026.</p>
+                </div>
+            </div>
+
+            <div class="grid-pilares">
+                <div class="tarjeta-pilar">
+                    <h4>Envíos Flash</h4>
+                    <p>Despacho directo a todas las regiones de Chile con seguimiento en tiempo real.</p>
+                </div>
+                <div class="tarjeta-pilar">
+                    <h4>Garantía Extendida</h4>
+                    <p>Todos nuestros componentes cuentan con sello oficial y soporte técnico dedicado.</p>
+                </div>
+                <div class="tarjeta-pilar">
+                    <h4>Calidad Certificada</h4>
+                    <p>Probamos rigurosamente cada producto antes de ponerlo a la venta en la plataforma.</p>
+                </div>
             </div>
         </section>
 
-        <!-- Listado de Productos (Se cargan vía JS) -->
-        <section class="seccion-productos">
-            <h3 class="titulo-seccion">Nuestros Productos</h3>
-            <div id="contenedor-productos" class="cuadricula-productos">
-                <!-- Los productos se inyectarán aquí mediante JavaScript -->
+        <!-- VISTA 3: BLOG -->
+        <section id="vista-blog" class="vista">
+            <div class="encabezado-seccion text-center">
+                <span class="tag-badge">BLOG & NEWS</span>
+                <h2 class="titulo-seccion">Artículos & <span class="texto-gradiente">Reviews</span></h2>
+            </div>
+            
+            <div class="cuadricula-productos">
+                <article class="tarjeta-producto blog-card">
+                    <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80" alt="Teclados Mecánicos">
+                    <div class="blog-body">
+                        <span class="fecha-blog">05 Octubre, 2026</span>
+                        <h4>Guía Definitiva: Switches Mecánicos vs Ópticos</h4>
+                        <p>Analizamos los tiempos de respuesta y durabilidad para setups competitivos.</p>
+                    </div>
+                </article>
+                <article class="tarjeta-producto blog-card">
+                    <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&q=80" alt="Mouse Gaming">
+                    <div class="blog-body">
+                        <span class="fecha-blog">28 Septiembre, 2026</span>
+                        <h4>Sensibilidad y DPI: Configura tu Mouse para FPS</h4>
+                        <p>Aprende a ajustar la aceleración y tasa de sondeo como los profesionales.</p>
+                    </div>
+                </article>
             </div>
         </section>
 
-        <!-- Formulario de Contacto para validaciones JS -->
-        <section id="contacto" class="seccion-contacto">
-            <h3 class="titulo-seccion">Contáctanos</h3>
-            <form id="formulario-contacto" class="formulario" novalidate>
-                <div class="grupo-control">
-                    <label for="nombre">Nombre Completo:</label>
-                    <input type="text" id="nombre" class="entrada-datos" autocomplete="name">
-                    <span class="mensaje-error" id="error-nombre"></span>
+        <!-- VISTA 4: REGISTRO CON SUGERENCIAS SPAN -->
+        <section id="vista-registro" class="vista">
+            <div class="contenedor-formulario-centrado">
+                <div class="tarjeta-glass-form">
+                    <h2 class="titulo-seccion text-center">Crear <span class="texto-gradiente">Cuenta</span></h2>
+                    <form id="formulario-registro" class="formulario" novalidate>
+                        <div class="grupo-control">
+                            <label for="reg-run">RUN (Chileno):</label>
+                            <input type="text" id="reg-run" class="entrada-datos" placeholder="19011022K">
+                            <span class="sugerencia-span" id="sug-reg-run">Sugerencia: Sin puntos ni guión (Ej: 19011022K).</span>
+                        </div>
+                        <div class="grid-2-col">
+                            <div class="grupo-control">
+                                <label for="reg-nombre">Nombre:</label>
+                                <input type="text" id="reg-nombre" class="entrada-datos" placeholder="Juan">
+                                <span class="sugerencia-span" id="sug-reg-nombre">Sugerencia: Mínimo 2 letras.</span>
+                            </div>
+                            <div class="grupo-control">
+                                <label for="reg-apellidos">Apellidos:</label>
+                                <input type="text" id="reg-apellidos" class="entrada-datos" placeholder="Pérez">
+                                <span class="sugerencia-span" id="sug-reg-apellidos">Sugerencia: Mínimo 2 letras.</span>
+                            </div>
+                        </div>
+                        <div class="grupo-control">
+                            <label for="reg-correo">Correo Electrónico:</label>
+                            <input type="email" id="reg-correo" class="entrada-datos" placeholder="usuario@duoc.cl">
+                            <span class="sugerencia-span" id="sug-reg-correo">Sugerencia: Dominios permitidos: @duoc.cl, @profesor.duoc.cl, @gmail.com</span>
+                        </div>
+                        <div class="grid-2-col">
+                            <div class="grupo-control">
+                                <label for="reg-password">Contraseña:</label>
+                                <input type="password" id="reg-password" class="entrada-datos">
+                                <span class="sugerencia-span" id="sug-reg-password">Sugerencia: De 4 a 10 caracteres.</span>
+                            </div>
+                            <div class="grupo-control">
+                                <label for="reg-confirm-password">Confirmar Contraseña:</label>
+                                <input type="password" id="reg-confirm-password" class="entrada-datos">
+                                <span class="sugerencia-span" id="sug-reg-confirm-password">Sugerencia: Debe coincidir exactamente con la clave anterior.</span>
+                            </div>
+                        </div>
+                        <div class="grid-2-col">
+                            <div class="grupo-control">
+                                <label for="reg-region">Región:</label>
+                                <select id="reg-region" class="entrada-datos">
+                                    <option value="">-- Seleccionar --</option>
+                                </select>
+                                <span class="sugerencia-span" id="sug-reg-region">Sugerencia: Seleccione su región de residencia.</span>
+                            </div>
+                            <div class="grupo-control">
+                                <label for="reg-comuna">Comuna:</label>
+                                <select id="reg-comuna" class="entrada-datos" disabled>
+                                    <option value="">-- Seleccionar --</option>
+                                </select>
+                                <span class="sugerencia-span" id="sug-reg-comuna">Sugerencia: Se habilita al elegir una región.</span>
+                            </div>
+                        </div>
+                        <div class="grupo-control">
+                            <label for="reg-direccion">Dirección de Despacho:</label>
+                            <input type="text" id="reg-direccion" class="entrada-datos" placeholder="Av. Principal 123">
+                            <span class="sugerencia-span" id="sug-reg-direccion">Sugerencia: Mínimo 5 caracteres (calle y número).</span>
+                        </div>
+                        <button type="submit" class="boton-primario ancho-completo">Completar Registro</button>
+                    </form>
                 </div>
-                
-                <div class="grupo-control">
-                    <label for="correo">Correo Electrónico:</label>
-                    <input type="email" id="correo" class="entrada-datos" autocomplete="email">
-                    <span class="mensaje-error" id="error-correo"></span>
-                </div>
-
-                <div class="grupo-control">
-                    <label for="comentario">Comentario:</label>
-                    <textarea id="comentario" class="entrada-datos text-area"></textarea>
-                    <span class="mensaje-error" id="error-comentario"></span>
-                </div>
-
-                <button type="submit" class="boton-primario">Enviar Mensaje</button>
-            </form>
+            </div>
         </section>
+
+        <!-- VISTA 5: LOGIN CON CREDENCIALES Y ROL ADMIN -->
+        <section id="vista-login" class="vista">
+            <div class="contenedor-formulario-centrado" style="max-width: 450px;">
+                <div class="tarjeta-glass-form">
+                    <h2 class="titulo-seccion text-center">Iniciar <span class="texto-gradiente">Sesión</span></h2>
+                    <form id="formulario-login" class="formulario" novalidate>
+                        <div class="grupo-control">
+                            <label for="login-correo">Correo Electrónico</label>
+                            <input type="email" id="login-correo" class="entrada-datos" placeholder="admin@duoc.cl">
+                            <span class="sugerencia-span" id="sug-login-correo">Sugerencia: Ingrese su correo registrado.</span>
+                        </div>
+                        <div class="grupo-control">
+                            <label for="login-password">Contraseña</label>
+                            <input type="password" id="login-password" class="entrada-datos">
+                            <span class="sugerencia-span" id="sug-login-password">Sugerencia: Ingrese su clave de acceso.</span>
+                        </div>
+                        <button type="submit" class="boton-primario ancho-completo">Acceder</button>
+                    </form>
+                    <div style="margin-top: 20px; padding: 12px; background: rgba(6,182,212,0.1); border-radius: 8px; border: 1px solid var(--borde-color); font-size: 0.85rem; color: var(--texto-secundario);">
+                         <strong>Credencial Admin de prueba:</strong><br>
+                        <strong>Correo:</strong> admin@duoc.cl | <strong>Clave:</strong> 1234
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 6: ADMIN (PROTEGIDA POR ROL) -->
+        <section id="vista-admin" class="vista">
+            <div class="encabezado-seccion">
+                <span class="tag-badge">PANEL DE CONTROL EXCLUSIVO</span>
+                <h2 class="titulo-seccion">Administración de <span class="texto-gradiente">satis-factory</span></h2>
+            </div>
+
+            <div class="tarjeta-glass-form margin-bottom">
+                <h3>Agregar / Modificar Producto</h3>
+                <form id="formulario-producto" class="formulario grid-2-col" novalidate>
+                    <div class="grupo-control">
+                        <label for="prod-codigo">Código Producto:</label>
+                        <input type="text" id="prod-codigo" class="entrada-datos" placeholder="PROD-001">
+                        <span class="sugerencia-span" id="sug-prod-codigo">Sugerencia: Código único Ej: PROD-005.</span>
+                    </div>
+                    <div class="grupo-control">
+                        <label for="prod-nombre">Nombre del Producto:</label>
+                        <input type="text" id="prod-nombre" class="entrada-datos" placeholder="Teclado RGB Pro">
+                        <span class="sugerencia-span" id="sug-prod-nombre">Sugerencia: Nombre descriptivo comercial.</span>
+                    </div>
+                    <div class="grupo-control">
+                        <label for="prod-categoria">Categoría:</label>
+                        <select id="prod-categoria" class="entrada-datos">
+                            <option value="Periféricos">Periféricos</option>
+                            <option value="Monitores">Monitores</option>
+                            <option value="Audio">Audio</option>
+                        </select>
+                        <span class="sugerencia-span" id="sug-prod-categoria">Sugerencia: Selecciona la familia de producto.</span>
+                    </div>
+                    <div class="grupo-control">
+                        <label for="prod-precio">Precio (CLP):</label>
+                        <input type="number" id="prod-precio" class="entrada-datos" placeholder="49990">
+                        <span class="sugerencia-span" id="sug-prod-precio">Sugerencia: Valor numérico mayor a $0.</span>
+                    </div>
+                    <div class="grupo-control span-2">
+                        <label for="prod-imagen">URL de la Imagen:</label>
+                        <input type="text" id="prod-imagen" class="entrada-datos" placeholder="https://images.unsplash.com/...">
+                        <span class="sugerencia-span" id="sug-prod-imagen">Sugerencia: Enlace web directo a una imagen (http/https).</span>
+                    </div>
+                    <button type="submit" class="boton-primario span-2">Guardar Producto en Inventario</button>
+                </form>
+            </div>
+
+            <div class="tarjeta-glass-form margin-bottom">
+                <h3>Inventario de Productos</h3>
+                <div class="contenedor-tabla">
+                    <table class="tabla-custom">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-productos"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tarjeta-glass-form">
+                <h3>Usuarios Registrados</h3>
+                <div class="contenedor-tabla">
+                    <table class="tabla-custom">
+                        <thead>
+                            <tr>
+                                <th>RUN</th>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-usuarios"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 7: CARRITO -->
+        <section id="vista-carrito" class="vista">
+            <div class="contenedor-formulario-centrado" style="max-width: 850px;">
+                <div class="tarjeta-glass-form">
+                    <h2 class="titulo-seccion text-center">Tu Carrito de <span class="texto-gradiente">Compras</span></h2>
+
+                    <div id="contenedor-carrito-vacio" class="text-center" style="display: none; padding: 40px 0;">
+                        <p style="font-size: 1.2rem; color: var(--texto-secundario); margin-bottom: 20px;">Aún no has agregado productos a tu orden.</p>
+                        <button class="boton-primario" onclick="cambiarVista('vista-home')">Ir a Explorar Catálogo</button>
+                    </div>
+
+                    <div id="contenedor-detalle-carrito">
+                        <div class="contenedor-tabla">
+                            <table class="tabla-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                        <th>Remover</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpo-tabla-carrito"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="resumen-checkout">
+                            <div class="fila-resumen">
+                                <span>Total a Pagar:</span>
+                                <strong id="monto-total-carrito" class="monto-destacado">$0 CLP</strong>
+                            </div>
+                            <div class="acciones-checkout">
+                                <button class="btn-secundario" onclick="vaciarCarrito()">Vaciar Carrito</button>
+                                <button class="boton-primario" onclick="finalizarCompra()">Proceder al Pago</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
+    <!-- MODAL INTERACTIVO DE DETALLE DE PRODUCTO -->
+    <div id="modal-producto" class="modal-backdrop" onclick="cerrarModalProducto(event)">
+        <div class="modal-contenedor">
+            <button class="modal-cerrar" onclick="cerrarModalProductoDirecto()">✕</button>
+            <div class="modal-body">
+                <div class="modal-imagen-box">
+                    <img id="modal-img" src="" alt="Producto">
+                </div>
+                <div class="modal-info-box">
+                    <span class="tag-badge">HARDWARE DESTACADO</span>
+                    <h3 id="modal-titulo">Nombre Producto</h3>
+                    <p id="modal-precio" class="precio-producto">$0 CLP</p>
+                    <div class="modal-especificaciones">
+                        <p><strong>Categoría:</strong> Periféricos de Alta Gama</p>
+                        <p><strong>Disponibilidad:</strong> <span style="color: #22c55e;">Stock Inmediato</span></p>
+                        <p><strong>Garantía:</strong> 12 meses de garantía oficial satis-factory.</p>
+                    </div>
+                    <div class="modal-selector-cantidad">
+                        <label>Cantidad:</label>
+                        <div class="control-cantidad-modal">
+                            <button onclick="cambiarCantModal(-1)">-</button>
+                            <span id="cant-modal">1</span>
+                            <button onclick="cambiarCantModal(1)">+</button>
+                        </div>
+                    </div>
+                    <button id="btn-modal-agregar" class="boton-primario ancho-completo" style="margin-top: 15px;">Añadir al Carrito</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de Página -->
     <footer class="pie-pagina">
-        <p>2026 MiTienda</p>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo-icono">⚡</span> <strong>satis<span class="logo-accent">-factory</span></strong>
+                <p>High Performance Hardware & Peripherals</p>
+            </div>
+            <p class="copyright">&copy; 2026 satis-factory Chile. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
